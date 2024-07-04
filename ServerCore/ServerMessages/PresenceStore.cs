@@ -26,7 +26,7 @@ namespace ServerCore.ServerMessages
                 teamStore = TeamStores[teamId];
             }
 
-            TeamPuzzleStore teamPuzzleStore = new TeamPuzzleStore();
+            TeamPuzzleStore teamPuzzleStore = new TeamPuzzleStore(teamId, puzzleId);
             if (!teamStore.TeamPuzzleStores.TryAdd(puzzleId, teamPuzzleStore))
             {
                 teamPuzzleStore = teamStore.TeamPuzzleStores[puzzleId];
@@ -100,10 +100,19 @@ namespace ServerCore.ServerMessages
     /// </summary>
     public class TeamPuzzleStore
     {
+        public int TeamId { get; }
+        public int PuzzleId { get; }
+
+        public TeamPuzzleStore(int teamId, int puzzleId)
+        {
+            TeamId = teamId;
+            PuzzleId = puzzleId;
+        }
+
         /// <summary>
         /// Event for a person joining or leaving a team puzzle
         /// </summary>
-        public event Func<IDictionary<Guid, PresenceModel>, Task> OnTeamPuzzlePresenceChange;
+        public event Func<int, IDictionary<Guid, PresenceModel>, Task> OnTeamPuzzlePresenceChange;
 
         /// <summary>
         /// The pages present on the team puzzle
@@ -115,7 +124,7 @@ namespace ServerCore.ServerMessages
             var onTeamPuzzlePresenceChange = OnTeamPuzzlePresenceChange;
             if (onTeamPuzzlePresenceChange != null)
             {
-                await onTeamPuzzlePresenceChange?.Invoke(PresentPages);
+                await onTeamPuzzlePresenceChange?.Invoke(PuzzleId, PresentPages);
             }
         }
     }
