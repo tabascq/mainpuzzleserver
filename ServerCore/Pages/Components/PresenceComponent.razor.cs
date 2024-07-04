@@ -146,6 +146,7 @@ namespace ServerCore.Pages.Components
         {
             var teamPuzzleStore = PresenceStore.GetOrCreateTeamPuzzleStore(TeamId, puzzleId);
             teamPuzzleStore.OnTeamPuzzlePresenceChange += OnPresenceChange;
+            teamPuzzleStores.Add(teamPuzzleStore);
 
             await UpdateModelAsync(puzzleId, teamPuzzleStore.PresentPages);
 
